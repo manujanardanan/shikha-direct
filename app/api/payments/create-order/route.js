@@ -35,7 +35,9 @@ export async function POST(req) {
     }
 
     const amountPaise = Number(process.env.REPORT_PRICE_PAISE) || DEFAULT_PRICE_PAISE;
-    const receipt = `report_${studentId}_${Date.now()}`;
+    // Keep this well under Razorpay's 56-character receipt limit -- a full
+    // UUID plus timestamp was actually 57 characters, one over the limit.
+    const receipt = `rpt_${studentId.slice(0, 8)}_${Date.now()}`;
 
     const order = await createRazorpayOrder({ amountPaise, receipt });
 
