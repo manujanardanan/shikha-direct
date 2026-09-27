@@ -2,8 +2,8 @@ import { query } from "../../../../lib/db";
 import { getSession } from "../../../../lib/auth";
 import { createRazorpayOrder } from "../../../../lib/razorpay";
 
-// Default price if not overridden by an env var -- Rs. 199
-const DEFAULT_PRICE_PAISE = 19900;
+// Default price if not overridden by an env var -- Rs. 39
+const DEFAULT_PRICE_PAISE = 3900;
 
 export async function POST(req) {
   try {
