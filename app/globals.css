@@ -1,7 +1,7 @@
 :root {
-  --flame: #d33b36;
-  --flame-deep: #b32e2a;
-  --flame-glow: rgba(211, 59, 54, 0.18);
+  --flame: #4f46e5;
+  --flame-deep: #4338ca;
+  --flame-glow: rgba(79, 70, 229, 0.18);
   --ink: #201c1a;
   --slate: #5c554f;
   --slate-light: #948c84;
@@ -124,4 +124,33 @@ a {
   border-radius: 10px;
   font-size: 14px;
   margin-bottom: 16px;
+}
+
+.print-only-header {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  .page-nav, .no-print {
+    display: none !important;
+  }
+  .report-print-area {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .print-only-header {
+    display: flex !important;
+  }
+  body {
+    background: white !important;
+  }
 }

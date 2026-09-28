@@ -161,12 +161,31 @@ function ResultsInner() {
 
           {/* ---- FULL REPORT ---- */}
           {acknowledged && !report.locked && (
-            <div className="card" style={{ padding: 36 }}>
-              <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, marginBottom: 4 }}>
-                {report.l2?.career?.label || report.l1?.domain?.label}
-              </h1>
+            <div className="card report-print-area" style={{ padding: 36 }}>
+              <div className="print-only-header" style={{ display: "none" }}>
+                <img src="/shikha-direct-icon.png" alt="" style={{ height: 22 }} />
+                <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16 }}>Shikha &mdash; Career Discovery Report</span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <div style={{ fontSize: 12.5, color: "var(--slate-light)", marginBottom: 4 }}>{report.student}&apos;s recommended direction</div>
+                  <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, margin: 0 }}>
+                    {report.l2?.career?.label || report.l1?.domain?.label}
+                  </h1>
+                  {report.riasec && (
+                    <p style={{ fontSize: 13, color: "var(--slate-light)", margin: "4px 0 0" }}>
+                      RIASEC profile: {report.riasec.name} ({report.riasec.code})
+                    </p>
+                  )}
+                </div>
+                <button className="btn btn-ghost no-print" onClick={() => window.print()} style={{ fontSize: 13, padding: "8px 14px", flexShrink: 0 }}>
+                  Print / Save as PDF
+                </button>
+              </div>
+
               {report.l3 && (
-                <div style={{ marginBottom: 20 }}>
+                <div style={{ margin: "14px 0 0" }}>
                   <span style={{
                     display: "inline-block", background: "var(--teal-glow)", color: "var(--teal)",
                     padding: "5px 12px", borderRadius: 999, fontSize: 12.5, fontWeight: 600,
@@ -176,25 +195,86 @@ function ResultsInner() {
                 </div>
               )}
 
-              <div style={{ background: "var(--paper-warm)", borderRadius: 12, padding: 18, marginBottom: 22, fontSize: 14, lineHeight: 1.65, color: "var(--slate)" }}>
-                {report.narrative?.intro}
+              <div style={{ background: "var(--paper-warm)", borderRadius: 12, padding: 18, margin: "20px 0" }}>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "var(--flame)", marginBottom: 6, letterSpacing: "0.04em" }}>WHY THIS RECOMMENDATION</div>
+                <p style={{ fontSize: 14, lineHeight: 1.65, color: "var(--slate)", margin: 0 }}>{report.narrative?.intro}</p>
               </div>
 
               {report.narrative?.body?.map((p, i) => (
                 <p key={i} style={{ fontSize: 14.5, lineHeight: 1.7, color: "var(--ink)", marginBottom: 14 }}>{p}</p>
               ))}
 
+              {/* ---- LEVEL 1 BREAKDOWN CHART ---- */}
+              {report.l1?.tallyBreakdown && (
+                <div style={{ marginTop: 26 }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15, marginBottom: 12 }}>
+                    Level 1 breakdown &mdash; across all six domains
+                  </h3>
+                  {report.l1.tallyBreakdown.map((row) => (
+                    <div key={row.key} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, fontSize: 12.5 }}>
+                      <span style={{ width: 110, flexShrink: 0, color: "var(--slate)", fontFamily: "monospace" }}>{row.label}</span>
+                      <div style={{ flex: 1, background: "var(--paper-warm)", borderRadius: 5, height: 9, overflow: "hidden" }}>
+                        <div style={{ width: `${row.percent}%`, height: "100%", background: "var(--flame)", borderRadius: 5 }} />
+                      </div>
+                      <span style={{ width: 34, flexShrink: 0, color: "var(--slate-light)", fontFamily: "monospace", textAlign: "right" }}>{row.percent}%</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* ---- LEVEL 2 BREAKDOWN CHART ---- */}
+              {report.l2?.tallyBreakdown && (
+                <div style={{ marginTop: 22 }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15, marginBottom: 12 }}>
+                    Level 2 breakdown &mdash; careers within {report.l1?.domain?.label}
+                  </h3>
+                  {report.l2.tallyBreakdown.map((row) => (
+                    <div key={row.key} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, fontSize: 12.5 }}>
+                      <span style={{ width: 110, flexShrink: 0, color: "var(--slate)", fontFamily: "monospace" }}>{row.label}</span>
+                      <div style={{ flex: 1, background: "var(--paper-warm)", borderRadius: 5, height: 9, overflow: "hidden" }}>
+                        <div style={{ width: `${row.percent}%`, height: "100%", background: "var(--teal)", borderRadius: 5 }} />
+                      </div>
+                      <span style={{ width: 34, flexShrink: 0, color: "var(--slate-light)", fontFamily: "monospace", textAlign: "right" }}>{row.percent}%</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {report.careerDetail && (
-                <div style={{ marginTop: 24 }}>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>What this could look like</h3>
-                  <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65, marginBottom: 14 }}>{report.careerDetail.diverseRoles}</p>
+                <div style={{ marginTop: 26 }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>What this could actually look like</h3>
+                  <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65, marginBottom: 18 }}>{report.careerDetail.diverseRoles}</p>
+
                   <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>Where people in this field work</h3>
-                  <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65 }}>{report.careerDetail.exampleCompanies}</p>
+                  <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65, marginBottom: 18 }}>{report.careerDetail.exampleCompanies}</p>
+
+                  {report.careerDetail.entrepreneurshipNote && (
+                    <>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>If you&apos;re drawn to entrepreneurship</h3>
+                      <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65, marginBottom: 18 }}>{report.careerDetail.entrepreneurshipNote}</p>
+                    </>
+                  )}
+
+                  {report.careerDetail.demandOutlook && (
+                    <>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>Why this field, looking ahead</h3>
+                      <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65, marginBottom: 18 }}>{report.careerDetail.demandOutlook}</p>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {report.l3?.weakTopics?.length > 0 && (
+                <div style={{ marginTop: 4, marginBottom: 22 }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16, marginBottom: 8 }}>Topics worth another look</h3>
+                  <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.65 }}>
+                    Based on the readiness check, these specific topics are worth some extra attention: {report.l3.weakTopics.join(", ")}.
+                  </p>
                 </div>
               )}
 
               {report.caveats && (
-                <div style={{ background: "var(--paper-warm)", borderRadius: 12, padding: 20, marginTop: 26 }}>
+                <div style={{ background: "var(--paper-warm)", borderRadius: 12, padding: 20, marginTop: 10 }}>
                   <b style={{ fontSize: 13.5 }}>Important context for reading this</b>
                   <ul style={{ margin: "10px 0 0", paddingLeft: 18 }}>
                     {report.caveats.map((c, i) => (
