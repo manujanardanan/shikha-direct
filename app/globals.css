@@ -154,3 +154,35 @@ a {
     background: white !important;
   }
 }
+
+/* ---- Legal pages (Terms / Privacy) ---- */
+.legal-body h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 30px 0 10px;
+}
+.legal-body p, .legal-body li {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--slate);
+}
+.legal-body ul {
+  padding-left: 20px;
+  margin: 8px 0 14px;
+}
+.legal-body li {
+  margin-bottom: 6px;
+}
+.legal-summary {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 10px;
+}
+.legal-summary p {
+  margin: 0 0 8px;
+}
+.legal-summary p:last-child {
+  margin-bottom: 0;
+}

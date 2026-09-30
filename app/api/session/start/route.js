@@ -1,6 +1,7 @@
 import { query } from "../../../../lib/db";
 import { buildL1Session, buildL2Session, buildL3Session } from "../../../../lib/scoring";
 import { getSession } from "../../../../lib/auth";
+import { accountHasCurrentConsent, CONSENT_REQUIRED_RESPONSE } from "../../../../lib/consent";
 
 async function assertOwnsStudent(accountId, studentId) {
   const { rows } = await query("select id from students where id = $1 and account_id = $2", [
@@ -15,6 +16,10 @@ export async function POST(req) {
     const session = getSession(req);
     if (!session) {
       return Response.json({ error: "You must be logged in" }, { status: 401 });
+    }
+
+    if (!(await accountHasCurrentConsent(session.accountId))) {
+      return Response.json(CONSENT_REQUIRED_RESPONSE, { status: 403 });
     }
 
     const body = await req.json();

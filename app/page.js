@@ -33,6 +33,9 @@ export default function Home() {
           Free to complete. A small fee unlocks the full detailed report.
         </p>
       </main>
+      <footer style={{ textAlign: "center", padding: "0 20px 32px", fontSize: 12.5, color: "var(--slate-light)" }}>
+        <Link href="/terms">Terms of Use</Link> &nbsp;·&nbsp; <Link href="/privacy">Privacy Policy</Link>
+      </footer>
     </div>
   );
 }
