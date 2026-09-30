@@ -9,6 +9,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [guardianDecl, setGuardianDecl] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -17,7 +19,7 @@ export default function Login() {
     setBusy(true);
     setError("");
     const url = mode === "login" ? "/api/auth/login" : "/api/auth/signup";
-    const body = mode === "login" ? { email, password } : { email, password, displayName };
+    const body = mode === "login" ? { email, password } : { email, password, displayName, consent, guardianDeclaration: guardianDecl };
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -84,12 +86,34 @@ export default function Login() {
                 <p style={{ fontSize: 12, color: "var(--slate-light)", margin: "6px 0 0" }}>At least 8 characters</p>
               )}
             </div>
-            <button className="btn btn-primary" style={{ marginTop: 8 }} disabled={busy}>
+            {mode === "signup" && (
+              <>
+                <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13, lineHeight: 1.55, color: "var(--slate)", cursor: "pointer" }}>
+                  <input type="checkbox" checked={guardianDecl} onChange={(e) => setGuardianDecl(e.target.checked)}
+                    style={{ marginTop: 3, width: 16, height: 16, flexShrink: 0 }} />
+                  <span>I am 18 or older, and a parent or legal guardian of the child or children I will add.</span>
+                </label>
+                <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13, lineHeight: 1.55, color: "var(--slate)", cursor: "pointer" }}>
+                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)}
+                    style={{ marginTop: 3, width: 16, height: 16, flexShrink: 0 }} />
+                  <span>
+                    I agree to the{" "}
+                    <Link href="/terms" target="_blank" style={{ color: "var(--flame)", fontWeight: 600 }}>Terms of Use</Link>{" "}
+                    and consent to my child’s information being handled as described in the{" "}
+                    <Link href="/privacy" target="_blank" style={{ color: "var(--flame)", fontWeight: 600 }}>Privacy Policy</Link>.
+                  </span>
+                </label>
+              </>
+            )}
+            <button className="btn btn-primary" style={{ marginTop: 8 }} disabled={busy || (mode === "signup" && !(consent && guardianDecl))}>
               {busy ? "Please wait..." : mode === "login" ? "Log in" : "Create account"}
             </button>
           </form>
         </div>
       </main>
+      <footer style={{ textAlign: "center", padding: "0 20px 28px", fontSize: 12.5, color: "var(--slate-light)" }}>
+        <Link href="/terms">Terms of Use</Link> &nbsp;·&nbsp; <Link href="/privacy">Privacy Policy</Link>
+      </footer>
     </div>
   );
 }

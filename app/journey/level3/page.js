@@ -76,6 +76,13 @@ function Level3Inner() {
   }
 
   if (!authChecked) return null;
+  if (!domainKey || !careerKey) {
+    return (
+      <main style={{ padding: 40, textAlign: "center" }}>
+        <p>We couldn’t tell which readiness check to open. <Link href="/dashboard">Back to your dashboard</Link></p>
+      </main>
+    );
+  }
 
   const q = session?.questions?.[qIdx];
   const total = session?.questions?.length || 0;

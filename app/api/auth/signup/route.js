@@ -1,12 +1,25 @@
 import { query } from "../../../../lib/db";
 import { signSession, setSessionCookie, isLocalRequest } from "../../../../lib/auth";
+import { CONSENT_VERSION } from "../../../../lib/legal";
 
 export async function POST(req) {
   try {
-    const { email, password, displayName } = await req.json();
+    const { email, password, displayName, consent, guardianDeclaration } = await req.json();
     if (!email || !password || !displayName) {
       return Response.json(
         { error: "email, password, and displayName are required" },
+        { status: 400 }
+      );
+    }
+    if (guardianDeclaration !== true) {
+      return Response.json(
+        { error: "You must confirm you are 18 or older and a parent or legal guardian to create an account." },
+        { status: 400 }
+      );
+    }
+    if (consent !== true) {
+      return Response.json(
+        { error: "You must accept the Terms of Use and Privacy Policy to create an account." },
         { status: 400 }
       );
     }
@@ -21,11 +34,12 @@ export async function POST(req) {
       return Response.json({ error: "An account with that email already exists" }, { status: 409 });
     }
 
+    // The consent version is set by the server, never trusted from the browser.
     const { rows } = await query(
-      `insert into accounts (email, password_hash, display_name)
-       values ($1, crypt($2, gen_salt('bf')), $3)
+      `insert into accounts (email, password_hash, display_name, consented_at, consent_version)
+       values ($1, crypt($2, gen_salt('bf')), $3, now(), $4)
        returning id, display_name`,
-      [email.toLowerCase(), password, displayName]
+      [email.toLowerCase(), password, displayName, CONSENT_VERSION]
     );
 
     const account = rows[0];
