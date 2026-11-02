@@ -12,6 +12,10 @@ export async function POST(req) {
       return Response.json({ error: "You must be logged in" }, { status: 401 });
     }
 
+    if (process.env.FREE_REPORT_MODE === "true") {
+      return Response.json({ error: "Reports are free right now - no payment needed" }, { status: 409 });
+    }
+
     const { studentId } = await req.json();
     if (!studentId) {
       return Response.json({ error: "studentId is required" }, { status: 400 });
